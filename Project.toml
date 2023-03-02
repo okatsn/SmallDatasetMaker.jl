@@ -1,13 +1,15 @@
 name = "SmallDatasetMaker"
 uuid = "7016d903-ac20-4882-9d97-75c232100024"
 authors = ["okatsn <okatsn@gmail.com> and contributors"]
-version = "0.1.0"
+version = "0.0.0"
 
 [compat]
 julia = "1.6"
 
 [extras]
+CompatHelperLocal = "5224ae11-6099-4aaa-941d-3aab004bd678"
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test"]
+test = ["Test", "Documenter", "CompatHelperLocal"]
