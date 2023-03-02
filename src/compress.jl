@@ -49,6 +49,9 @@ mutable struct SourceData
     timestamps::TimeType
 end
 
+"""
+`field_column_dictionary` follows the order of the field of Source data.
+"""
 const field_column_dictionary = OrderedDict(
     :srcfile => :RawData,    
     :package_name => :PackageName,
@@ -61,6 +64,24 @@ const field_column_dictionary = OrderedDict(
     :timestamps => :TimeStamp
 )
 
+"""
+The order for `dataset_table()`.
+"""
+const ordered_columns = [
+    :PackageName,
+    :Dataset,
+    :Title,
+    :Rows,
+    :Columns,
+    :Description,
+    :TimeStamp,
+    :RawData,
+    :ZippedData
+]
+
+"""
+`column_field_dictionary` follows the order of the field of Source data.
+"""
 const column_field_dictionary = OrderedDict(zip(values(field_column_dictionary), keys(field_column_dictionary)))
 
 
@@ -120,16 +141,11 @@ function SourceData(srcfile)
     SourceData(srcfile, package_name, dataset_name)
 end
 
+"""
+Construct a `DataFrame` following the order of `ordered_columns`.
+"""
 function SmallDatasetMaker.DataFrame(SD::SourceData)
-    return DataFrame(:PackageName  => SD.package_name,
-    :Dataset  => SD.dataset_name,
-    :Title  => SD.title,
-    :Rows  => SD.rows,
-    :Columns  => SD.columns,
-    :Description  => SD.description,
-    :TimeStamp  => SD.timestamps,
-    :RawData  => SD.srcfile,
-    :ZippedData  => SD.zipfile)
+    return DataFrame([col => getfield(SD, column_field_dictionary[col]) for col in ordered_columns])
 end
 
 """

@@ -54,3 +54,14 @@ function target_row(package_name, dataset_name; kwargs...)
     indextable = SmallDatasetMaker.datasets(; kwargs...)
     row = filter([:PackageName, :Dataset] => (p, d) -> p == package_name && d == dataset_name , indextable) |> eachrow |> last
 end
+
+"""
+Initiate referencing table at $(dataset_table()).
+"""
+function create_empty_table()
+    if isfile(dataset_table())
+        error("$(dataset_table()) already exists.")
+    else
+        DataFrame( [col => String[] for col in ordered_columns]) |> df -> CSV.write(SmallDatasetMaker.dataset_table(), df)
+    end
+end

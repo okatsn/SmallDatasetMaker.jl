@@ -1,3 +1,0 @@
-PackageName,Dataset,Title,Rows,Columns,Description,TimeStamp,RawData,ZippedData
-MJ,IRIS,Data [IRIS] of [MJ],150,5,,2023-02-15,data/raw/iris.csv,data/MJ/IRIS.gz
-RDatasets,iris,Data [iris] of [RDatasets],150,5,,2023-02-15,data/raw/iris.csv,data/RDatasets/iris.gz

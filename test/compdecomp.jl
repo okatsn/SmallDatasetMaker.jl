@@ -4,19 +4,14 @@ SmallDatasetMaker.dataset_table() = "datasets_for_test.csv"
 
 SmallDatasetMaker.today() = Date(2023,2,15) # To make the content in datasets_for_test.csv unchanged after test.
 
-DataFrame(
-    :PackageName => String[],
-    :Dataset => String[],
-    :Title => String[],
-    :Rows => String[],
-    :Columns => String[],
-    :Description => String[],
-    :TimeStamp => String[],
-    :RawData => String[],
-    :ZippedData => String[],
-) |> df -> CSV.write(SmallDatasetMaker.dataset_table(), df)
 
+create_empty_table()
 iris = RDatasets.dataset("datasets", "iris")
+
+@testset "Field-Column test" begin
+    # field_column_dictionary follows the order of the field of Source data.
+    @test isequal.(fieldnames(SmallDatasetMaker.SourceData), keys(SmallDatasetMaker.field_column_dictionary)) |> all
+end
 
 @testset "Source-Target paths" begin
 
@@ -32,6 +27,8 @@ iris = RDatasets.dataset("datasets", "iris")
     dataset_name = "IRIS"
     SD = SmallDatasetMaker.SourceData(srcfile, package_name, dataset_name)
     show(SD) # also test `show`
+
+    @test isequal.(names(SmallDatasetMaker.DataFrame(SD)), string.(SmallDatasetMaker.ordered_columns)) |> all # DataFrame created from SourceData should in the correct order as ordered_columns # KEYNOTE: This is not necessary but just test if it is consistent with docstring since appending DataFrame is insensitive to column order.
 
     SmallDatasetMaker.compress_save!(SD) ##KEYNOTE: test the main method
     @test isfile(SD.zipfile) || "Target file ($(SD.zipfile)) unexported"
@@ -101,3 +98,5 @@ end
 
     rm("data"; recursive = true)
 end
+
+rm(SmallDatasetMaker.dataset_table())
