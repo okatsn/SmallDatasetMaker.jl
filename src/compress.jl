@@ -105,7 +105,7 @@ function SourceData(srcfile)
     SourceData(srcfile, package_name, dataset_name)
 end
 
-function SWCDatasets.DataFrame(SD::SourceData)
+function SmallDatasetMaker.DataFrame(SD::SourceData)
     return DataFrame(:PackageName  => SD.package_name,
     :Dataset  => SD.dataset_name,
     :Title  => SD.title,
@@ -147,7 +147,7 @@ function SourceData(row::DataFrameRow)
         )
 end
 
-function SWCDatasets.show(io::IO, SD::SourceData)
+function SmallDatasetMaker.show(io::IO, SD::SourceData)
     row = DataFrame(SD) |> eachrow |> only
     show(io, PrettyTables.pretty_table(DataFrame(:Field => keys(row), :Content => collect(values(row)))))
 end
@@ -190,7 +190,7 @@ function compress_save!(SD::SourceData; move_source = true)
         SD.srcfile = target_raw
     end
 
-    CSV.write(dataset_table(), SWCDatasets.DataFrame(SD); append=true)
+    CSV.write(dataset_table(), SmallDatasetMaker.DataFrame(SD); append=true)
     @info "$(basename(dataset_table())) updated successfully."
 end
 

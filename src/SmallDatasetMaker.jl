@@ -19,4 +19,6 @@ export SourceData, compress_save, compress_save!
 
 include("decompress.jl")
 
+# TODO: create a dataset.csv generator and remove the entire data/doc/datasets.csv
+
 end
