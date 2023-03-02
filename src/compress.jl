@@ -149,6 +149,24 @@ function SmallDatasetMaker.DataFrame(SD::SourceData)
 end
 
 """
+`SourceData(mod::Module, row::DataFrameRow)` applies `abspath(mod, x)`.
+"""
+function SourceData(mod::Module, row::DataFrameRow)
+    abspathmod(x) = abspath(mod, x)
+    SourceData(
+        abspathmod(row.RawData),    # srcfile::Union{Missing,String}
+        row.PackageName,         # package_name::String
+        row.Dataset,             # dataset_name::String
+        row.Title,               # title::Union{Missing,String}
+        abspathmod(row.ZippedData), # zipfile::String
+        row.Rows,                # rows::Int
+        row.Columns,             # columns::Int
+        row.Description,         # description::Union{Missing,String}
+        row.TimeStamp,           # timestamps::TimeType
+        )
+end
+
+"""
 `SourceData(row::DataFrameRow)` returns
 ```julia
 SourceData(
@@ -165,17 +183,7 @@ SourceData(
 ```
 """
 function SourceData(row::DataFrameRow)
-    SourceData(
-        abspath(row.RawData),    # srcfile::Union{Missing,String}
-        row.PackageName,         # package_name::String
-        row.Dataset,             # dataset_name::String
-        row.Title,               # title::Union{Missing,String}
-        abspath(row.ZippedData), # zipfile::String
-        row.Rows,                # rows::Int
-        row.Columns,             # columns::Int
-        row.Description,         # description::Union{Missing,String}
-        row.TimeStamp,           # timestamps::TimeType
-        )
+    SourceData(SmallDatasetMaker, row::DataFrameRow)
 end
 
 function SmallDatasetMaker.show(io::IO, SD::SourceData)

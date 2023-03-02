@@ -4,6 +4,11 @@ SmallDatasetMaker.dataset_table() = "datasets_for_test.csv"
 
 SmallDatasetMaker.today() = Date(2023,2,15) # To make the content in datasets_for_test.csv unchanged after test.
 
+# Extending methods for test
+
+SmallDatasetMaker.unzip_file(package_name::AbstractString, dataset_name::AbstractString; kwargs...) = unzip_file(SmallDatasetMaker, package_name::AbstractString, dataset_name::AbstractString; kwargs...)
+
+SmallDatasetMaker.dataset(package_name::AbstractString, dataset_name::AbstractString; kwargs...) = dataset(SmallDatasetMaker,package_name::AbstractString, dataset_name::AbstractString; kwargs...)
 
 create_empty_table()
 iris = RDatasets.dataset("datasets", "iris")
