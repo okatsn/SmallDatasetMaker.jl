@@ -13,9 +13,9 @@ include("datadir.jl")
 
 using CodecZlib,Dates
 import PrettyTables
+using OrderedCollections
 include("compress.jl")
 export SourceData, compress_save, compress_save!
-
 
 include("decompress.jl")
 

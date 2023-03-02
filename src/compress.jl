@@ -49,6 +49,21 @@ mutable struct SourceData
     timestamps::TimeType
 end
 
+const field_column_dictionary = OrderedDict(
+    :srcfile => :RawData,    
+    :package_name => :PackageName,
+    :dataset_name => :Dataset,    
+    :title => :Title,      
+    :zipfile => :ZippedData, 
+    :rows => :Rows,       
+    :columns => :Columns,    
+    :description => :Description,
+    :timestamps => :TimeStamp
+)
+
+const column_field_dictionary = OrderedDict(zip(values(field_column_dictionary), keys(field_column_dictionary)))
+
+
 """
 SourceData(srcfile, package_name, dataset_name, title, zipfile, rows, columns, description, timestamps)
 
