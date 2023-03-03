@@ -193,10 +193,10 @@ end
 
 
 """
-`compress_save!(SD::SourceData; move_source = true)` compress the `SD.srcfile`, save the zipped one to `SD.zipfile`, and update the $(dataset_table()).
+`compress_save!(mod::Module, SD::SourceData; move_source = true)` compress the `SD.srcfile`, save the zipped one to `SD.zipfile`, and update the $(dataset_table()).
 By default, `move_source = true` that the source file will be moved to `dir_raw()`.
 """
-function compress_save!(SD::SourceData; move_source = true)
+function compress_save!(mod::Module, SD::SourceData; move_source = true)
 
     compressed = return_compressed(SD.srcfile)
     target_path = SD.zipfile
@@ -228,21 +228,28 @@ function compress_save!(SD::SourceData; move_source = true)
         end
         SD.srcfile = target_raw
     end
-
-    CSV.write(dataset_table(), SmallDatasetMaker.DataFrame(SD); append=true)
-    @info "$(basename(dataset_table())) updated successfully."
+    reftablepath = dataset_table(mod)
+    CSV.write(reftablepath, SmallDatasetMaker.DataFrame(SD); append=true)
+    @info "$(basename(reftablepath)) updated successfully."
 end
 
+function compress_save!(SD::SourceData; kwargs...)
+    compress_save!(SmallDatasetMaker, SD; kwargs...)
+end
 
 """
-`compress_save(srcpath)` is equivalent to `compress_save!(SourceData(srcpath))` but returns `SD::SourceData`.
+`compress_save(mod::Module, srcpath; args...)` is equivalent to `compress_save!(mod, SourceData(srcpath))` but returns `SD::SourceData`.
 
 `compress_save` takes the same keyword arguments as `compress_save!`.
 """
-function compress_save(srcpath; args...)
-    SD = SourceData(srcpath)
-    compress_save!(SD; args...)
+function compress_save(mod::Module, srcpath; args...)
+    SD = SourceData(mod, srcpath) # CHECKPOINT: Fail at here, there is a lack of method of SourceData(mod, srcpath)
+    compress_save!(mod, SD; args...)
     return SD
+end
+
+function compress_save(srcpath; args...)
+    compress_save(SmallDatasetMaker, srcpath)
 end
 
 
