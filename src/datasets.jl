@@ -1,5 +1,5 @@
 """
-`DATASET_ABS_DIR(mod::Module)` returns the absolute directory for package `mod`. 
+`DATASET_ABS_DIR(mod::Module)` returns the absolute directory for package `mod`.
 """
 DATASET_ABS_DIR(mod::Module) = Ref{String}(dirname(dirname(pathof(mod)))) # FIXME: Absolute path
 
@@ -84,9 +84,10 @@ end
 
 """
 Initiate referencing table at $(dataset_table()).
+It takes exactly the same arguments of `dataset_table`.
 """
-function create_empty_table()
-    if isfile(dataset_table())
+function create_empty_table(args...)
+    if isfile(dataset_table(args...))
         error("$(dataset_table()) already exists.")
     else
         DataFrame( [col => String[] for col in ordered_columns]) |> df -> CSV.write(SmallDatasetMaker.dataset_table(), df)
