@@ -152,10 +152,6 @@ function compress_save!(mod::Module, SD::SourceData; move_source = true)
     @info "$(basename(reftablepath)) updated successfully."
 end
 
-function compress_save!(SD::SourceData; kwargs...)
-    compress_save!(SmallDatasetMaker, SD; kwargs...)
-end
-
 """
 `compress_save(mod::Module, srcpath; args...)` is equivalent to `compress_save!(mod, SourceData(srcpath))` but returns `SD::SourceData`.
 
@@ -166,10 +162,3 @@ function compress_save(mod::Module, srcpath; args...)
     compress_save!(mod, SD; args...)
     return SD
 end
-
-function compress_save(srcpath; args...)
-    compress_save(SmallDatasetMaker, srcpath)
-end
-
-
-# TODO: rename functions

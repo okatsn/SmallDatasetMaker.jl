@@ -3,17 +3,10 @@
 # These functions are applied only for package internal use.
 
 """
-Path to the directory for the to-be-compressed data; only for package internal use.
-"""
-dir_to_be_converted(args...) = joinpath("data", "to_be_converted", args...) # TODO: delete me and all related code
-
-
-"""
 Path to the directory for the backup of the raw data; only for package internal use.
 """
 dir_raw(mod::Module, args...) = joinpath(DATASET_ABS_DIR(mod)[], "data", "raw", args...)
 
-dir_raw(args...) = joinpath("data", "raw", args...)
 
 """
 Path to the directory for the data.

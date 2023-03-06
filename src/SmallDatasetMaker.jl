@@ -2,7 +2,7 @@ module SmallDatasetMaker
 
 # Write your package code here.
 
-global __datasets = nothing
+# global __datasets = nothing
 
 using OkFiles
 
