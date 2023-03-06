@@ -53,9 +53,9 @@ SmallDatasetMaker.datasets() = SmallDatasetMaker.datasets(SmallDatasetMaker)
 
 @testset "datasets.jl" begin
     using DataFrames
-    # There should be no datasets.csv
+    # There should be no datasets.csv, and thus raise an expected error.
     @test try
-        SmallDatasetMaker.datasets();
+        SmallDatasetMaker.datasets(SmallDatasetMaker);
         false;
     catch e
         true;
@@ -65,10 +65,10 @@ SmallDatasetMaker.datasets() = SmallDatasetMaker.datasets(SmallDatasetMaker)
     create_empty_table() # in fact, error will occur if there is a file already.
 
     # # Even if it is created, .__datasets should be nothing until the first call of SmallDatasetMaker.datasets()
-    # @test isnothing(SmallDatasetMaker.__datasets)
+    @test !isdefined(SmallDatasetMaker, :__datasets)
 
     df = SmallDatasetMaker.datasets()
     @test isa(df, DataFrame)
-    # @test isa(SmallDatasetMaker.__datasets, DataFrame)
+    @test isa(SmallDatasetMaker.__datasets, DataFrame)
     rm(SmallDatasetMaker.dataset_table())
 end

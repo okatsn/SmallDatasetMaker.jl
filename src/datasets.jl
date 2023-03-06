@@ -30,14 +30,19 @@ dataset_table(mod::Module) = joinpath(DATASET_ABS_DIR(mod)[],"data", "doc", "dat
 
 
 """
-`datasets(mod::Module)` returns the table of this dataset.
+`datasets(mod::Module)` reads the table from `dataset_table(mod)`, and set `__datasets::DataFrame` to be the global variable in the scope of `mod`.
 """
 function datasets(mod::Module)
-    # if SmallDatasetMaker.__datasets === nothing || update_table
-        # global __datasets = DataFrame(CSV.File(dataset_table(mod))) # , and define the global variable `SmallDatasetMaker.__datasets` as this table
-        __datasets = DataFrame(CSV.File(dataset_table(mod)))
-    # end
-    return __datasets::DataFrame
+    tablepath = dataset_table(mod)
+
+    if !isdefined(mod, :__datasets)
+        expr = quote
+                global __datasets = DataFrame(CSV.File($tablepath)) # , and define the global variable `SmallDatasetMaker.__datasets` as this table
+        end
+        @eval(mod, $expr)
+    end
+
+    return mod.__datasets
 end
 # Set `; update_table = true` to force update `SmallDatasetMaker.__datasets` with the `dataset_table(mod)`; this keyword argument is intended to make some tests can work since in test `dataset_table(mod)` is mutating. # todo: find a better way to deal with it.
 
