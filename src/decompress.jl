@@ -3,13 +3,13 @@
 This function mimics the `dataset` function in `RDatasets.jl`.
 
 """
-function dataset(package_name::AbstractString, dataset_name::AbstractString; kwargs...)
+function dataset(mod::Module,package_name::AbstractString, dataset_name::AbstractString; kwargs...)
     row = target_row(package_name, dataset_name; kwargs...)
-    SD = SourceData(row)
+    SD = SourceData(mod, row)
     dataset(SD.zipfile)
 end
 
-abspathnoticemsg = "If you were intended to load `target_path` under `SmallDatasetMaker` rather than the current directory your working with, you should apply `abspath` that `target_path = SmallDatasetMaker.abspath(target_path)`."
+abspathnoticemsg = "If you were intended to load `target_path` under `SmallDatasetMaker` or anyother package rather than the current directory you are working with, you should apply `abspath(args::String...)` or `abspath(ACertainImportedPackage, args::String...)` that `target_path = SmallDatasetMaker.abspath(...)`."
 
 """
 `dataset(target_path)` decompress `target_path` and returns it as a `DataFrame`.
@@ -32,9 +32,9 @@ end
 """
 The same as `dataset`, but also save the unzip file.
 """
-function unzip_file(package_name::AbstractString, dataset_name::AbstractString; kwargs...)
+function unzip_file(mod::Module, package_name::AbstractString, dataset_name::AbstractString; kwargs...)
     row = target_row(package_name, dataset_name; kwargs...)
-    SD = SourceData(row)
+    SD = SourceData(mod, row)
     decompressed1 = _unzip(SD.zipfile) # load the zipped file in SmallDatasetMaker
     file_decomp = row.RawData # save the unzipped file to path relative to current environment
     df_decomp1 = _save_file(file_decomp, decompressed1)

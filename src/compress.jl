@@ -50,6 +50,42 @@ mutable struct SourceData
 end
 
 """
+`field_column_dictionary` follows the order of the field of Source data.
+"""
+const field_column_dictionary = OrderedDict(
+    :srcfile => :RawData,    
+    :package_name => :PackageName,
+    :dataset_name => :Dataset,    
+    :title => :Title,      
+    :zipfile => :ZippedData, 
+    :rows => :Rows,       
+    :columns => :Columns,    
+    :description => :Description,
+    :timestamps => :TimeStamp
+)
+
+"""
+The order for `dataset_table()`.
+"""
+const ordered_columns = [
+    :PackageName,
+    :Dataset,
+    :Title,
+    :Rows,
+    :Columns,
+    :Description,
+    :TimeStamp,
+    :RawData,
+    :ZippedData
+]
+
+"""
+`column_field_dictionary` follows the order of the field of Source data.
+"""
+const column_field_dictionary = OrderedDict(zip(values(field_column_dictionary), keys(field_column_dictionary)))
+
+
+"""
 SourceData(srcfile, package_name, dataset_name, title, zipfile, rows, columns, description, timestamps)
 
 
@@ -105,16 +141,29 @@ function SourceData(srcfile)
     SourceData(srcfile, package_name, dataset_name)
 end
 
+"""
+Construct a `DataFrame` following the order of `ordered_columns`.
+"""
 function SmallDatasetMaker.DataFrame(SD::SourceData)
-    return DataFrame(:PackageName  => SD.package_name,
-    :Dataset  => SD.dataset_name,
-    :Title  => SD.title,
-    :Rows  => SD.rows,
-    :Columns  => SD.columns,
-    :Description  => SD.description,
-    :TimeStamp  => SD.timestamps,
-    :RawData  => SD.srcfile,
-    :ZippedData  => SD.zipfile)
+    return DataFrame([col => getfield(SD, column_field_dictionary[col]) for col in ordered_columns])
+end
+
+"""
+`SourceData(mod::Module, row::DataFrameRow)` applies `abspath(mod, x)`.
+"""
+function SourceData(mod::Module, row::DataFrameRow)
+    abspathmod(x) = abspath(mod, x)
+    SourceData(
+        abspathmod(row.RawData),    # srcfile::Union{Missing,String}
+        row.PackageName,         # package_name::String
+        row.Dataset,             # dataset_name::String
+        row.Title,               # title::Union{Missing,String}
+        abspathmod(row.ZippedData), # zipfile::String
+        row.Rows,                # rows::Int
+        row.Columns,             # columns::Int
+        row.Description,         # description::Union{Missing,String}
+        row.TimeStamp,           # timestamps::TimeType
+        )
 end
 
 """
@@ -134,17 +183,7 @@ SourceData(
 ```
 """
 function SourceData(row::DataFrameRow)
-    SourceData(
-        abspath(row.RawData),    # srcfile::Union{Missing,String}
-        row.PackageName,         # package_name::String
-        row.Dataset,             # dataset_name::String
-        row.Title,               # title::Union{Missing,String}
-        abspath(row.ZippedData), # zipfile::String
-        row.Rows,                # rows::Int
-        row.Columns,             # columns::Int
-        row.Description,         # description::Union{Missing,String}
-        row.TimeStamp,           # timestamps::TimeType
-        )
+    SourceData(SmallDatasetMaker, row::DataFrameRow)
 end
 
 function SmallDatasetMaker.show(io::IO, SD::SourceData)

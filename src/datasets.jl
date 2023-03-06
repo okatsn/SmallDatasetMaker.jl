@@ -1,14 +1,29 @@
 """
-Absolute directory for package `SmallDatasetMaker`. Also see `abspath`.
+`DATASET_ABS_DIR(mod::Module)` returns the absolute directory for package `mod`. 
 """
-const DATASET_ABS_DIR = Ref{String}(dirname(dirname(pathof(SmallDatasetMaker)))) # FIXME: Absolute path
+DATASET_ABS_DIR(mod::Module) = Ref{String}(dirname(dirname(pathof(mod)))) # FIXME: Absolute path
 
 
 """
-`abspath(args...) = joinpath(DATASET_ABS_DIR[], args...)`
+`DATASET_ABS_DIR()[]` returns the absolute directory for package `SmallDatasetMaker`. Also see `abspath`.
 """
-abspath(args...) = joinpath(DATASET_ABS_DIR[], args...)
+DATASET_ABS_DIR() = DATASET_ABS_DIR(SmallDatasetMaker)
 
+"""
+`abspath(mod::Module, args...) = joinpath(DATASET_ABS_DIR(mod)[], args...)`
+"""
+abspath(mod::Module, args...) = joinpath(DATASET_ABS_DIR(mod)[], args...)
+
+"""
+`abspath(args...) = joinpath(DATASET_ABS_DIR()[], args...)`
+"""
+abspath(args::String...) = abspath(SmallDatasetMaker, args...)
+
+
+"""
+`dataset_dir(mod::Module, args::String...)` returns the absolute dataset path referencing `mod`.
+"""
+dataset_dir(mod::Module, args::String...) = joinpath(DATASET_ABS_DIR(mod)[], "data", args...)
 
 """
 Absolute path to the "data" of `SmallDatasetMaker`. See also `DATASET_ABS_DIR`.
@@ -21,16 +36,28 @@ Absolute path to the "data" of `SmallDatasetMaker`. See also `DATASET_ABS_DIR`.
 "~/.julia/dev/SmallDatasetMaker/data/doc/datasets.csv"
 ```
 """
-dataset_dir(args...) = joinpath(DATASET_ABS_DIR[], "data", args...)
+dataset_dir(args::String...) = dataset_dir(SmallDatasetMaker, args...)
+
 
 """
+`dataset_table(mod::Module) = joinpath(DATASET_ABS_DIR(mod)[],"data", "doc", "datasets.csv")`
+
+
+"""
+dataset_table(mod::Module) = joinpath(DATASET_ABS_DIR(mod)[],"data", "doc", "datasets.csv")
+
+"""
+`dataset_table()`.
+
 The path to the index table for datasets in `SmallDatasetMaker`.
 If SmallDatasetMaker is added using `pkg> dev SmallDatasetMaker` in other project/environment, `dataset_table()` returns "~/.julia/dev/SmallDatasetMaker/src/../data/doc/datasets.csv".
 
 The reason for `dataset_table` to be a function rather than a constant is that I can redefine it in the scope of test. See `test/compdecomp.jl`.
 
 """
-dataset_table() = joinpath(DATASET_ABS_DIR[],"data", "doc", "datasets.csv")
+dataset_table() = dataset_table(SmallDatasetMaker)
+
+
 
 
 """
@@ -53,4 +80,15 @@ Given `package_name, dataset_name`, `target_row(package_name, dataset_name)`, `t
 function target_row(package_name, dataset_name; kwargs...)
     indextable = SmallDatasetMaker.datasets(; kwargs...)
     row = filter([:PackageName, :Dataset] => (p, d) -> p == package_name && d == dataset_name , indextable) |> eachrow |> last
+end
+
+"""
+Initiate referencing table at $(dataset_table()).
+"""
+function create_empty_table()
+    if isfile(dataset_table())
+        error("$(dataset_table()) already exists.")
+    else
+        DataFrame( [col => String[] for col in ordered_columns]) |> df -> CSV.write(SmallDatasetMaker.dataset_table(), df)
+    end
 end
