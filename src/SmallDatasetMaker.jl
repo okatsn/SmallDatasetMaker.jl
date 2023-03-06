@@ -2,7 +2,7 @@ module SmallDatasetMaker
 
 # Write your package code here.
 
-global __datasets = nothing
+# global __datasets = nothing
 
 using OkFiles
 
@@ -15,8 +15,10 @@ include("datadir.jl")
 using CodecZlib,Dates
 import PrettyTables
 using OrderedCollections
+include("sourcedata.jl")
+export SourceData
 include("compress.jl")
-export SourceData, compress_save, compress_save!
+export compress_save, compress_save!
 
 include("decompress.jl")
 export dataset, unzip_file

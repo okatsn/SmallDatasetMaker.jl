@@ -1,14 +1,11 @@
 using CodecZlib,CSV,DataFrames,RDatasets,Dates
 
-SmallDatasetMaker.dataset_table() = "datasets_for_test.csv"
 
 SmallDatasetMaker.today() = Date(2023,2,15) # To make the content in datasets_for_test.csv unchanged after test.
 
 # Extending methods for test
 
-SmallDatasetMaker.unzip_file(package_name::AbstractString, dataset_name::AbstractString; kwargs...) = unzip_file(SmallDatasetMaker, package_name::AbstractString, dataset_name::AbstractString; kwargs...)
 
-SmallDatasetMaker.dataset(package_name::AbstractString, dataset_name::AbstractString; kwargs...) = dataset(SmallDatasetMaker,package_name::AbstractString, dataset_name::AbstractString; kwargs...)
 
 create_empty_table()
 iris = RDatasets.dataset("datasets", "iris")
@@ -45,9 +42,8 @@ end
 
     @test isfile(SmallDatasetMaker.dir_data(package_name, dataset_name*".gz")) || "Target file not exists or named correctly"
 
-    @test !isfile(srcfile) || "srcfile should be moved to dir_raw()"
+    @test !isfile(srcfile) || "srcfile should be moved to dir_raw"
     @test isfile(SD.srcfile) || "SD.srcfile should be updated and the file should exists"
-    @test isfile(SmallDatasetMaker.dir_raw(basename(SD.srcfile))) || "srcfile should be moved to dir_raw()"
 
     rm("IRIS.csv")
     rm("data"; recursive = true)
@@ -101,7 +97,5 @@ end
     @test isfile(SD.srcfile) # to here!
     @test isfile(target_path)
 
-    rm("data"; recursive = true)
+    rm(SmallDatasetMaker.dataset_dir(); recursive = true)
 end
-
-rm(SmallDatasetMaker.dataset_table())

@@ -1,10 +1,10 @@
 """
-`dataset(package_name::AbstractString, dataset_name::AbstractString)` returns a `DataFrame` object unzipped from the last `row` returned by `target_row(package_name, dataset_name)`.
+`dataset(package_name::AbstractString, dataset_name::AbstractString)` returns a `DataFrame` object unzipped from the last `row` returned by `target_row(mod, package_name, dataset_name)`.
 This function mimics the `dataset` function in `RDatasets.jl`.
 
 """
 function dataset(mod::Module,package_name::AbstractString, dataset_name::AbstractString; kwargs...)
-    row = target_row(package_name, dataset_name; kwargs...)
+    row = target_row(mod, package_name, dataset_name; kwargs...)
     SD = SourceData(mod, row)
     dataset(SD.zipfile)
 end
@@ -33,7 +33,7 @@ end
 The same as `dataset`, but also save the unzip file.
 """
 function unzip_file(mod::Module, package_name::AbstractString, dataset_name::AbstractString; kwargs...)
-    row = target_row(package_name, dataset_name; kwargs...)
+    row = target_row(mod, package_name, dataset_name; kwargs...)
     SD = SourceData(mod, row)
     decompressed1 = _unzip(SD.zipfile) # load the zipped file in SmallDatasetMaker
     file_decomp = row.RawData # save the unzipped file to path relative to current environment

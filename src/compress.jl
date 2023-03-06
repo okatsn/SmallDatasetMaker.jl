@@ -76,10 +76,43 @@ const column_field_dictionary = OrderedDict(zip(values(field_column_dictionary),
 
 
 
+# abstract type ModuleReferability end
+# struct ModuleReferable <: ModuleReferability
+# struct NotModuleReferable <: ModuleReferability
 
+# is_module(x::Module) = ModuleReferable()
+# is_module(x) = NotModuleReferable()
+
+# function SourceData(args..., ::ModuleReferable)
+#     SourceData(args...)
+# end
+
+# function SourceData(args..., ::NotModuleReferable)
+#     SourceData(args...)
+# end
+
+# function SourceData(args...)
+#     SourceData(args..., is_module(args[1]))
+# end
+
+# function compress_save!(SD::SourceData, ::ModuleReferable; kwargs...)
+
+# end
+
+
+# function compress_save!(SD::SourceData, ::NotModuleReferable; kwargs...)
+
+# end
+
+# function compress_save!(SD::SourceData; kwargs...)
+#     ismod = is_module(SD);
+#     compress_save!(SD, ismod; kwargs...)
+# end
+
+# CHECKPOINT: Consider bind ModuleReferable to SourceData
 
 """
-`compress_save!(mod::Module, SD::SourceData; move_source = true)` compress the `SD.srcfile`, save the zipped one to `SD.zipfile`, and update the $(dataset_table()).
+`compress_save!(mod::Module, SD::SourceData; move_source = true)` compress the `SD.srcfile`, save the zipped one to `SD.zipfile`, and update the `dataset_table(mod)`.
 By default, `move_source = true` that the source file will be moved to `dir_raw()`.
 """
 function compress_save!(mod::Module, SD::SourceData; move_source = true)
@@ -93,7 +126,7 @@ function compress_save!(mod::Module, SD::SourceData; move_source = true)
     end
 
     if move_source
-        target_raw = dir_raw(basename(SD.srcfile))
+        target_raw = dir_raw(mod, basename(SD.srcfile))
         if isfile(target_raw)
             ex = open(target_raw, "r") do io
                 read(io)
@@ -119,24 +152,13 @@ function compress_save!(mod::Module, SD::SourceData; move_source = true)
     @info "$(basename(reftablepath)) updated successfully."
 end
 
-function compress_save!(SD::SourceData; kwargs...)
-    compress_save!(SmallDatasetMaker, SD; kwargs...)
-end
-
 """
 `compress_save(mod::Module, srcpath; args...)` is equivalent to `compress_save!(mod, SourceData(srcpath))` but returns `SD::SourceData`.
 
 `compress_save` takes the same keyword arguments as `compress_save!`.
 """
 function compress_save(mod::Module, srcpath; args...)
-    SD = SourceData(mod, srcpath) # CHECKPOINT: Fail at here, there is a lack of method of SourceData(mod, srcpath)
+    SD = SourceData(mod, srcpath)
     compress_save!(mod, SD; args...)
     return SD
 end
-
-function compress_save(srcpath; args...)
-    compress_save(SmallDatasetMaker, srcpath)
-end
-
-
-# TODO: rename functions
