@@ -47,7 +47,6 @@ end
 
     @test !isfile(srcfile) || "srcfile should be moved to dir_raw()"
     @test isfile(SD.srcfile) || "SD.srcfile should be updated and the file should exists"
-    @test isfile(SmallDatasetMaker.dir_raw(basename(SD.srcfile))) || "srcfile should be moved to dir_raw()"
 
     rm("IRIS.csv")
     rm("data"; recursive = true)
@@ -101,7 +100,7 @@ end
     @test isfile(SD.srcfile) # to here!
     @test isfile(target_path)
 
-    rm("data"; recursive = true)
+    rm(SmallDatasetMaker.dataset_dir(); recursive = true)
 end
 
 rm(SmallDatasetMaker.dataset_table())

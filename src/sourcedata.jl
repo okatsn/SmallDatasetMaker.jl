@@ -1,3 +1,4 @@
+
 mutable struct SourceData
     srcfile::Union{Missing,String}
     package_name::String
@@ -9,6 +10,8 @@ mutable struct SourceData
     description::Union{Missing,String}
     timestamps::TimeType
 end
+
+
 
 """
 SourceData(srcfile, package_name, dataset_name, title, zipfile, rows, columns, description, timestamps)
@@ -57,9 +60,6 @@ function SourceData(srcfile, package_name, dataset_name)
     SourceData(srcfile, package_name, dataset_name, title)
 end
 
-function SourceData(mod::Module, args...)
-    SourceData(args...)
-end
 
 """
 If `package_name, dataset_name` not specified, `(package_name, dataset_name) = get_package_dataset_name(srcfile)` is applied.
@@ -67,6 +67,18 @@ If `package_name, dataset_name` not specified, `(package_name, dataset_name) = g
 function SourceData(srcfile)
     (package_name, dataset_name) = get_package_dataset_name(srcfile)
     SourceData(srcfile, package_name, dataset_name)
+end
+
+"""
+`SourceData(mod::Module, args...)`. Same as above, but `joinpath` the directory `zipfile` with `DATASET_ABS_DIR(mod::Module)`. See also `abspath`.
+"""
+function SourceData(mod::Module, args...)
+    SD = SourceData(args...)
+    # make paths referencing `DATASET_ABS_DIR(mod::Module)`
+    abspathmod(x) = abspath(mod, x)
+    # SD.srcfile = abspathmod(SD.srcfile) # You cannot redefine source since it is a must for SourceData interface.
+    SD.zipfile = abspathmod(SD.zipfile)
+    return SD
 end
 
 """
@@ -78,6 +90,7 @@ end
 
 """
 `SourceData(mod::Module, row::DataFrameRow)` applies `abspath(mod, x)`.
+This is for loading data according to dataset_table, thus, srcfile should be referred to that in mod.
 """
 function SourceData(mod::Module, row::DataFrameRow)
     abspathmod(x) = abspath(mod, x)
