@@ -69,17 +69,6 @@ function SourceData(srcfile)
     SourceData(srcfile, package_name, dataset_name)
 end
 
-"""
-`SourceData(mod::Module, args...)`. Same as above, but `joinpath` the directory `zipfile` with `DATASET_ABS_DIR(mod::Module)`. See also `abspath`.
-"""
-function SourceData(mod::Module, args...)
-    SD = SourceData(args...)
-    # make paths referencing `DATASET_ABS_DIR(mod::Module)`
-    abspathmod(x) = abspath(mod, x)
-    # SD.srcfile = abspathmod(SD.srcfile) # You cannot redefine source since it is a must for SourceData interface.
-    SD.zipfile = abspathmod(SD.zipfile)
-    return SD
-end
 
 """
 Construct a `DataFrame` following the order of `ordered_columns`.
@@ -89,45 +78,45 @@ function SmallDatasetMaker.DataFrame(SD::SourceData)
 end
 
 """
-`SourceData(mod::Module, row::DataFrameRow)` applies `abspath(mod, x)`.
-This is for loading data according to dataset_table, thus, srcfile should be referred to that in mod.
+`SourceData(mod::Module, row::DataFrameRow)` applies create an `SourceData` objects from a row of a `DataFrame` (i.e., `dataset_table(mod)`), with `abspath!` applied.
+
+This is for loading data according to `dataset_table`; thus, paths should be referred to that in mod instead of being relative to the current directory.
 """
 function SourceData(mod::Module, row::DataFrameRow)
-    abspathmod(x) = abspath(mod, x)
-    SourceData(
-        abspathmod(row.RawData),    # srcfile::Union{Missing,String}
+    SD = SourceData(
+        row.RawData,    # srcfile::Union{Missing,String}
         row.PackageName,         # package_name::String
         row.Dataset,             # dataset_name::String
         row.Title,               # title::Union{Missing,String}
-        abspathmod(row.ZippedData), # zipfile::String
+        row.ZippedData, # zipfile::String
         row.Rows,                # rows::Int
         row.Columns,             # columns::Int
         row.Description,         # description::Union{Missing,String}
         row.TimeStamp,           # timestamps::TimeType
         )
+    abspath!(SD, mod)
+    return SD
 end
 
-"""
-`SourceData(row::DataFrameRow)` returns
-```julia
-SourceData(
-    abspath(row.RawData),    # srcfile::Union{Missing,String}
-    row.PackageName,         # package_name::String
-    row.Dataset,             # dataset_name::String
-    row.Title,               # title::Union{Missing,String}
-    abspath(row.ZippedData), # zipfile::String
-    row.Rows,                # rows::Int
-    row.Columns,             # columns::Int
-    row.Description,         # description::Union{Missing,String}
-    row.TimeStamp,           # timestamps::TimeType
-    )
-```
-"""
-function SourceData(row::DataFrameRow)
-    SourceData(SmallDatasetMaker, row::DataFrameRow)
-end
+
 
 function SmallDatasetMaker.show(io::IO, SD::SourceData)
     row = DataFrame(SD) |> eachrow |> only
     show(io, PrettyTables.pretty_table(DataFrame(:Field => keys(row), :Content => collect(values(row)))))
+end
+
+"""
+`relpath!(SD::SourceData, mod::Module)` makes all paths in `SD` to be relative path to `DATASET_ABS_DIR`.
+"""
+function relpath!(SD::SourceData, mod::Module)
+    SD.srcfile = relpath(SD.srcfile, DATASET_ABS_DIR(mod)[])
+    SD.zipfile = relpath(SD.zipfile, DATASET_ABS_DIR(mod)[])
+end
+
+"""
+`abspath!(SD::SourceData, mod::Module)` makes all paths in `SD` to be absolute with the starting directory `DATASET_ABS_DIR`.
+"""
+function abspath!(SD::SourceData, mod::Module)
+    SD.srcfile = abspath(mod, SD.srcfile)
+    SD.zipfile = abspath(mod, SD.zipfile)
 end

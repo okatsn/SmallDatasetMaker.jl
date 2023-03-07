@@ -111,9 +111,14 @@ const column_field_dictionary = OrderedDict(zip(values(field_column_dictionary),
 
 # CHECKPOINT: Consider bind ModuleReferable to SourceData
 
+returned = "`SD::SourceData` of relative paths to `DATASET_ABS_DIR(mod)[]`"
+
 """
 `compress_save!(mod::Module, SD::SourceData; move_source = true)` compress the `SD.srcfile`, save the zipped one to `SD.zipfile`, and update the `dataset_table(mod)`.
 By default, `move_source = true` that the source file will be moved to `dir_raw()`.
+
+`compress_save!` returns $returned, where
+`relpath!` is applied that paths `SD` as well as `dataset_table(mod)` are modified to be relative.
 """
 function compress_save!(mod::Module, SD::SourceData; move_source = true)
 
@@ -147,18 +152,19 @@ function compress_save!(mod::Module, SD::SourceData; move_source = true)
         end
         SD.srcfile = target_raw
     end
+    relpath!(SD, mod)
     reftablepath = dataset_table(mod)
-    CSV.write(reftablepath, SmallDatasetMaker.DataFrame(SD); append=true)
+    CSV.write(reftablepath, SmallDatasetMaker.DataFrame(SD); append=true) # write .srcfile, .zipfile as relative paths (thus can be abspath! correctly when using `dataset` or `unzip_file` using `package_name` & `dataset_name`)
     @info "$(basename(reftablepath)) updated successfully."
 end
 
 """
 `compress_save(mod::Module, srcpath; args...)` is equivalent to `compress_save!(mod, SourceData(srcpath))` but returns `SD::SourceData`.
 
-`compress_save` takes the same keyword arguments as `compress_save!`.
+`compress_save` takes the same keyword arguments as `compress_save!`, which returns $returned.
 """
 function compress_save(mod::Module, srcpath; args...)
-    SD = SourceData(mod, srcpath)
+    SD = SourceData(srcpath)
     compress_save!(mod, SD; args...)
     return SD
 end

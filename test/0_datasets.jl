@@ -1,3 +1,23 @@
+# """
+# `SourceData(row::DataFrameRow)` returns
+# ```julia
+# SourceData(
+#     abspath(row.RawData),    # srcfile::Union{Missing,String}
+#     row.PackageName,         # package_name::String
+#     row.Dataset,             # dataset_name::String
+#     row.Title,               # title::Union{Missing,String}
+#     abspath(row.ZippedData), # zipfile::String
+#     row.Rows,                # rows::Int
+#     row.Columns,             # columns::Int
+#     row.Description,         # description::Union{Missing,String}
+#     row.TimeStamp,           # timestamps::TimeType
+#     )
+# ```
+# """
+# function SmallDatasetMaker.SourceData(row::DataFrameRow)
+#     SourceData(SmallDatasetMaker, row::DataFrameRow)
+# end
+
 SmallDatasetMaker.unzip_file(package_name::AbstractString, dataset_name::AbstractString; kwargs...) = unzip_file(SmallDatasetMaker, package_name::AbstractString, dataset_name::AbstractString; kwargs...)
 
 SmallDatasetMaker.dataset(package_name::AbstractString, dataset_name::AbstractString; kwargs...) = dataset(SmallDatasetMaker,package_name::AbstractString, dataset_name::AbstractString; kwargs...)
@@ -24,7 +44,7 @@ SmallDatasetMaker.DATASET_ABS_DIR() = DATASET_ABS_DIR(SmallDatasetMaker)
 """
 `abspath(args...) = joinpath(DATASET_ABS_DIR()[], args...)`
 """
-SmallDatasetMaker.abspath(args::String...) = abspath(SmallDatasetMaker, args...)
+SmallDatasetMaker.abspath(args::String...) = SmallDatasetMaker.abspath(SmallDatasetMaker, args...)
 
 
 """
