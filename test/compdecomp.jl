@@ -70,6 +70,7 @@ end
     @test isequal(decompressed1, original)
 
     # Test compress_save
+    # SD0 = SourceData(srcfile)
     SD = SmallDatasetMaker.compress_save(srcfile; move_source=true) # KEYNOTE: test the alternative method
     target_path = SD.zipfile
 
@@ -99,3 +100,9 @@ end
 
     rm(SmallDatasetMaker.dataset_dir(); recursive = true)
 end
+
+
+# TODO: test relative paths:
+# - compress_save! makes paths in SD relative
+# - SourceData(mod, ::DataFrameRow) makes paths absolute
+# - SourceData(mod, ::NotDataFrameRow) makes paths relative to mod
