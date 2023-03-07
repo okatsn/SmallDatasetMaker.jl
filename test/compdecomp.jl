@@ -76,6 +76,7 @@ end
 
     # KEYNOTE: test the alternative method
     SD = SmallDatasetMaker.compress_save(srcfile; move_source=true) # save to SmallDatasetMaker/data/...
+    show(SD)
     target_path = SmallDatasetMaker.abspath(SD.zipfile)
 
 
@@ -99,6 +100,7 @@ end
     @test isequal(dataset_name1,dataset_name2)
 
     @info "`srcfile`: $srcfile"
+    @info "`SD.srcfile`: $(SD.srcfile)"
     @info "`source_file_moved`: $source_file_moved"
     @info "`target_path`: $target_path"
     @info "`SD.zipfile`: $(SD.zipfile)"
@@ -108,8 +110,8 @@ end
     @test !isfile(SD.srcfile) # should no longer here in test's scope
     @test isfile(source_file_moved) # to here!
     @test isfile(target_path)
-    @test !isfile(SD.zipfile) # zipped file is not relative to the test directory
 
+    rm(target_path) # pwd is test/, SD.zipfile is originally data/RDatasets/iris.gz, and be modified by `relpath!` in `compress_save!`, making it test/data/RDatasets/iris.gz (relative to SmallDatasetMaker). Thus, I have to manually remove test/data/RDatasets/iris.gz; for a usual case, it is expected to use SmallDatasetMaker in the project folder of XXXDatasets.
     rm(SmallDatasetMaker.dataset_dir(); recursive = true)
 end
 

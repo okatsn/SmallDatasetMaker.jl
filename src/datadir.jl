@@ -9,10 +9,14 @@ dir_raw(mod::Module, args...) = joinpath(DATASET_ABS_DIR(mod)[], "data", "raw", 
 
 
 """
-Path to the directory for the data.
+Absolute path to the directory of data.
 """
 dir_data(mod::Module, args...) = joinpath(DATASET_ABS_DIR(mod)[], "data", args...)
 
+
+"""
+Relative path to the directory of data; this is called by `SourceData`.
+"""
 dir_data(args...) = joinpath("data", args...)
 
 """
