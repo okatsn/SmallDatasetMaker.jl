@@ -8,7 +8,7 @@ using OkFiles
 
 using CSV,DataFrames
 include("datasets.jl")
-export create_empty_table
+export create_empty_table, datasets
 
 include("datadir.jl")
 

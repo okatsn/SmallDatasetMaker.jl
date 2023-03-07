@@ -28,16 +28,19 @@ The reason for `dataset_table` to be a function rather than a constant is that I
 dataset_table(mod::Module) = joinpath(DATASET_ABS_DIR(mod)[],"data", "doc", "datasets.csv")
 
 
+readcsvfile(tablepath) = DataFrame(CSV.File(tablepath))
 
 """
-`datasets(mod::Module)` reads the table from `dataset_table(mod)`, and set `__datasets::DataFrame` to be the global variable in the scope of `mod`.
+`datasets(mod::Module)` reads the table from `dataset_table(mod)`, and set `__datasets::DataFrame` to be the global variable in the scope of `mod` (i.e., `mod.__datasets` show the list of packages and datasets).
+
+If there is no `using SmallDatasetMaker` in the `module \$mod ... end`, it will fail since it is executed at the scope of `mod`.
 """
 function datasets(mod::Module)
     tablepath = dataset_table(mod)
 
     if !isdefined(mod, :__datasets)
         expr = quote
-                global __datasets = DataFrame(CSV.File($tablepath)) # , and define the global variable `SmallDatasetMaker.__datasets` as this table
+            global __datasets = SmallDatasetMaker.readcsvfile($tablepath) # , and define the global variable `SmallDatasetMaker.__datasets` as this table
         end
         @eval(mod, $expr)
     end
