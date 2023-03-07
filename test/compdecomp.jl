@@ -33,17 +33,19 @@ end
     @test isequal.(names(SmallDatasetMaker.DataFrame(SD)), string.(SmallDatasetMaker.ordered_columns)) |> all # DataFrame created from SourceData should in the correct order as ordered_columns # KEYNOTE: This is not necessary but just test if it is consistent with docstring since appending DataFrame is insensitive to column order.
 
     SmallDatasetMaker.compress_save!(SD) ##KEYNOTE: test the main method
-    @test isfile(SD.zipfile) || "Target file ($(SD.zipfile)) unexported"
+    target_path = SmallDatasetMaker.abspath(SD.zipfile)
+    @test isfile(target_path) || "Target file ($(target_path)) unexported"
 
-    df_decomp2 = SmallDatasetMaker.dataset(SD.zipfile)
-    df_decomp1 = SmallDatasetMaker.unzip_file(SD.zipfile)
+    df_decomp2 = SmallDatasetMaker.dataset(target_path)
+    df_decomp1 = SmallDatasetMaker.unzip_file(target_path)
 
     @test isequal(df_decomp1, df_decomp2)
 
     @test isfile(SmallDatasetMaker.dir_data(package_name, dataset_name*".gz")) || "Target file not exists or named correctly"
 
     @test !isfile(srcfile) || "srcfile should be moved to dir_raw"
-    @test isfile(SD.srcfile) || "SD.srcfile should be updated and the file should exists"
+    source_file_moved = SmallDatasetMaker.abspath(SD.srcfile)
+    @test isfile(source_file_moved) || "SD.srcfile should be updated and the file should exists"
 
     rm("IRIS.csv")
     rm("data"; recursive = true)
@@ -71,15 +73,21 @@ end
 
     # Test compress_save
     # SD0 = SourceData(srcfile)
-    SD = SmallDatasetMaker.compress_save(srcfile; move_source=true) # KEYNOTE: test the alternative method
-    target_path = SD.zipfile
+
+    # KEYNOTE: test the alternative method
+    SD = SmallDatasetMaker.compress_save(srcfile; move_source=true) # save to SmallDatasetMaker/data/...
+    show(SD)
+    target_path = SmallDatasetMaker.abspath(SD.zipfile)
 
 
 
     df_decomp2 = SmallDatasetMaker.dataset(target_path)
     df_decomp1 = SmallDatasetMaker.unzip_file(target_path)
     rm(basename(srcfile)) # By default iris.csv is uzipped to pwd
-    df_decomp0 = CSV.read(SD.srcfile, DataFrame)
+
+
+    source_file_moved = SmallDatasetMaker.abspath(SD.srcfile)
+    df_decomp0 = CSV.read(source_file_moved, DataFrame)
 
 
     @test isequal(df_decomp1, df_decomp0)
@@ -92,12 +100,18 @@ end
     @test isequal(dataset_name1,dataset_name2)
 
     @info "`srcfile`: $srcfile"
+    @info "`SD.srcfile`: $(SD.srcfile)"
+    @info "`source_file_moved`: $source_file_moved"
     @info "`target_path`: $target_path"
+    @info "`SD.zipfile`: $(SD.zipfile)"
     @info "Test if the two files exists:"
+
     @test !isfile(srcfile) # should be moved
-    @test isfile(SD.srcfile) # to here!
+    @test !isfile(SD.srcfile) # should no longer here in test's scope
+    @test isfile(source_file_moved) # to here!
     @test isfile(target_path)
 
+    rm(target_path) # pwd is test/, SD.zipfile is originally data/RDatasets/iris.gz, and be modified by `relpath!` in `compress_save!`, making it test/data/RDatasets/iris.gz (relative to SmallDatasetMaker). Thus, I have to manually remove test/data/RDatasets/iris.gz; for a usual case, it is expected to use SmallDatasetMaker in the project folder of XXXDatasets.
     rm(SmallDatasetMaker.dataset_dir(); recursive = true)
 end
 

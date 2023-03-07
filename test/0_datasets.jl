@@ -18,6 +18,13 @@
 #     SourceData(SmallDatasetMaker, row::DataFrameRow)
 # end
 
+
+"""
+`DATASET_ABS_DIR()[]` returns the absolute directory for package `SmallDatasetMaker`. Also see `abspath`.
+"""
+SmallDatasetMaker.DATASET_ABS_DIR() = DATASET_ABS_DIR(SmallDatasetMaker)
+
+
 SmallDatasetMaker.unzip_file(package_name::AbstractString, dataset_name::AbstractString; kwargs...) = unzip_file(SmallDatasetMaker, package_name::AbstractString, dataset_name::AbstractString; kwargs...)
 
 SmallDatasetMaker.dataset(package_name::AbstractString, dataset_name::AbstractString; kwargs...) = dataset(SmallDatasetMaker,package_name::AbstractString, dataset_name::AbstractString; kwargs...)
@@ -35,16 +42,11 @@ end
 SmallDatasetMaker.dir_raw(args...) = joinpath(SmallDatasetMaker, "data", "raw", args...)
 
 
-"""
-`DATASET_ABS_DIR()[]` returns the absolute directory for package `SmallDatasetMaker`. Also see `abspath`.
-"""
-SmallDatasetMaker.DATASET_ABS_DIR() = DATASET_ABS_DIR(SmallDatasetMaker)
-
 
 """
 `abspath(args...) = joinpath(DATASET_ABS_DIR()[], args...)`
 """
-SmallDatasetMaker.abspath(args::String...) = abspath(SmallDatasetMaker, args...)
+SmallDatasetMaker.abspath(args::String...) = SmallDatasetMaker.abspath(SmallDatasetMaker, args...)
 
 
 """

@@ -154,7 +154,7 @@ function compress_save!(mod::Module, SD::SourceData; move_source = true)
     end
     relpath!(SD, mod)
     reftablepath = dataset_table(mod)
-    CSV.write(reftablepath, SmallDatasetMaker.DataFrame(SD); append=true)
+    CSV.write(reftablepath, SmallDatasetMaker.DataFrame(SD); append=true) # write .srcfile, .zipfile as relative paths (thus can be abspath! correctly when using `dataset` or `unzip_file` using `package_name` & `dataset_name`)
     @info "$(basename(reftablepath)) updated successfully."
 end
 
