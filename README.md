@@ -11,24 +11,34 @@
 
 This is a julia package created using `okatsn`'s preference, and this package is expected to be registered to [okatsn/OkRegistry](https://github.com/okatsn/OkRegistry) for CIs to work properly.
 
-!!! note Checklist
-    - [x] Create an empty repository (namely, `https://github.com/okatsn/SmallDatasetMaker.jl.git`) on github, and push the local to origin. See [connecting to remote](#tips-for-connecting-to-remote).
-    - [x] Add `ACCESS_OKREGISTRY` secret in the settings of this repository on Github, or delete both `register.yml` and `TagBot.yml` in `/.github/workflows/`. See [Auto-Registration](#auto-registration).
+`SmallDatasetMaker` provides tools for making your own dataset as a julia package.
+### Procedure
+In for example, `MyDataset`,
+1. Make your dataset to be compressed a csv file.
+2. Define the `SourceData` object with the `srcpath` to be the path to this csv file.
+3. Call `compress_save!`.
+4. `using SmallDatasetMaker` in the module scope of `MyDataset`.
+5. (Optional) Define and re-export the `dataset` function.
 
-## References
+For example:
 
-
-### Test
-#### How to add a new test
-Add `.jl` files (that has `@testset` block or `@test` inside) in `test/`; `test/runtests.jl` will automatically `include` all the `.jl` scripts there.
-
-#### Test docstring
-`doctest` is executed at the following **two** places:
-1. In `CI.yml`, `jobs: test: ` that runs `test/runtests.jl`
-2. In `CI.yml`, `jobs: docs: ` that runs directly on bash.
-
-It is no harm to run both, but you can manually delete either.
-Of course, `pkg> test` will also run `doctest` since it runs also `test/runtests.jl`.
+```julia
+module MyDatasets
+    using DrWatson
+    include("projectdir.jl")
 
 
-This package is create on 2023-03-02.
+    using SmallDatasetMaker # This is required. See `SmallDatasetMaker.datasets`.
+    function MyDatasets.dataset(package_name, dataset_name) 
+        SmallDatasetMaker.dataset(MyDatasets,package_name, dataset_name)
+    end
+    export dataset
+end
+
+using MyDatasets
+dataset("LHVRSHIVA", "SHIVA")
+```
+
+!!! note Keep the default branch clean!
+    - Commit and push only the compressed .gz files and the updated `data/doc/datasets.csv`
+    - You may work on an alternative branch, e.g. `new-dataset-from-raw`, and use `git merge --no-ff new-dataset-from-raw` to your default branch and manually un-stage all artifacts.
