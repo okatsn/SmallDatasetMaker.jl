@@ -18,25 +18,29 @@ In for example, `MyDataset`,
 2. Define the `SourceData` object with the `srcpath` to be the path to this csv file.
 3. Call `compress_save!`.
 4. `using SmallDatasetMaker` in the module scope of `MyDataset`.
-5. (Optional) Define and re-export the `dataset` function.
+5. (Optional) New methods for `dataset` and `datasets`; see the example below.
 
 For example:
 
 ```julia
+# in src/MyDatasets/jl
 module MyDatasets
     using DrWatson
     include("projectdir.jl")
 
-
-    using SmallDatasetMaker # This is required. See `SmallDatasetMaker.datasets`.
+    using SmallDatasetMaker # (required) See also `SmallDatasetMaker.datasets`.
     function MyDatasets.dataset(package_name, dataset_name) 
         SmallDatasetMaker.dataset(MyDatasets,package_name, dataset_name)
-    end
-    export dataset
+    end # (optional)
+
+    MyDatasets.datasets() = SmallDatasetMaker.datasets(FSDatasets) # (optional)
+    # so that you can use `FSDatasets.datasets()` to list all availabe `package/dataest`s in `FSDatasets`
 end
 
+# in REPL
 using MyDatasets
-dataset("LHVRSHIVA", "SHIVA")
+MyDatasets.datasets() # a DataFrame for all availabe packages and datasets
+df = MyDatasets.dataset("LHVRSHIVA", "SHIVA") # load dataset "SHIVA" in package "LHVRSHIVA" as a DataFrame
 ```
 
 !!! note Keep the default branch clean!
