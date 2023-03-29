@@ -33,8 +33,8 @@ module MyDatasets
         SmallDatasetMaker.dataset(MyDatasets,package_name, dataset_name)
     end # (optional)
 
-    MyDatasets.datasets() = SmallDatasetMaker.datasets(FSDatasets) # (optional)
-    # so that you can use `FSDatasets.datasets()` to list all availabe `package/dataest`s in `FSDatasets`
+    MyDatasets.datasets() = SmallDatasetMaker.datasets(MyDatasets) # (optional)
+    # so that you can use `MyDatasets.datasets()` to list all availabe `package/dataest`s in `MyDatasets`
 end
 
 # in REPL
