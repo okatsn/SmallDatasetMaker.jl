@@ -1,10 +1,13 @@
 """
 `DATASET_ABS_DIR(mod::Module)` returns the absolute directory for package `mod`.
 """
-DATASET_ABS_DIR(mod::Module) = Ref{String}(dirname(dirname(pathof(mod)))) # FIXME: Absolute path
+DATASET_ABS_DIR(mod::Module) = Ref{String}(dirname(dirname(pathof(mod))))
 
 """
-`abspath(mod::Module, args...) = joinpath(DATASET_ABS_DIR(mod)[], args...)`
+`abspath(mod::Module, args...) = joinpath(DATASET_ABS_DIR(mod)[], args...)`.
+
+# WARNING: DO NOT EXPORT THIS FUNCTION
+this function has the same name of `abspath` in `FilePathsBase` and `Base.Filesystem`.
 """
 abspath(mod::Module, args...) = joinpath(DATASET_ABS_DIR(mod)[], args...)
 
