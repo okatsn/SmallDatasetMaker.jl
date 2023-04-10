@@ -32,7 +32,7 @@ include("tryparse.jl")
 export tryparse_summary
 
 include("difftable.jl")
-export difftable
+export difftables
 
 
 end
