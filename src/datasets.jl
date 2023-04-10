@@ -40,7 +40,7 @@ function datasets(mod::Module)
 
     if !isdefined(mod, :__datasets)
         expr = quote
-            global __datasets = SmallDatasetMaker.readcsvfile($tablepath) # , and define the global variable `SmallDatasetMaker.__datasets` as this table
+            const __datasets = SmallDatasetMaker.readcsvfile($tablepath) # , and define the global variable `SmallDatasetMaker.__datasets` as this table
         end
         @eval(mod, $expr)
     end

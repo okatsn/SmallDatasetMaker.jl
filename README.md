@@ -46,3 +46,23 @@ df = MyDatasets.dataset("LHVRSHIVA", "SHIVA") # load dataset "SHIVA" in package 
 !!! note Keep the default branch clean!
     - Commit and push only the compressed .gz files and the updated `data/doc/datasets.csv`
     - You may work on an alternative branch, e.g. `new-dataset-from-raw`, and use `git merge --no-ff new-dataset-from-raw` to your default branch and manually un-stage all artifacts.
+
+
+### Additional tests
+
+#### Check your table
+Use `tryparse_summary`.
+
+#### Test
+You may also optionally have the following tests in `MyDatasets`:
+
+```julia
+
+@testset "datasets.jl" begin
+    using DataFrames
+    df = MyDatasets.datasets()
+    @test isa(df, DataFrame)
+    @test isa(MyDatasets.__datasets, DataFrame)
+end
+
+```

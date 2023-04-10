@@ -23,6 +23,9 @@ export compress_save, compress_save!
 include("decompress.jl")
 export dataset, unzip_file
 
+include("tryparse.jl")
+export tryparse_summary
+
 # TODO: create a dataset.csv generator and remove the entire data/doc/datasets.csv
 
 end
