@@ -3,7 +3,7 @@
 # These functions are applied only for package internal use.
 
 """
-Path to the directory for the backup of the raw data; only for package internal use.
+Path to the directory "data/raw/" of module `mod`; the default directory for the raw data.
 """
 dir_raw(mod::Module, args...) = joinpath(DATASET_ABS_DIR(mod)[], "data", "raw", args...)
 
