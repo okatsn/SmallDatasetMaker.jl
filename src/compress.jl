@@ -121,14 +121,16 @@ By default, `move_source = true` that the source file will be moved to `dir_raw(
 `relpath!` is applied that paths `SD` as well as `dataset_table(mod)` are modified to be relative.
 
 # Example
+
 ```julia
 using YourDatasets, SmallDatasetMaker
 compress_save!(YourDatasets, SD)
 ```
+
 This do the followings:
 1. Create zipped files under `data/` of package `YourDatasets` in `dev`elopment.
 2. Move the source file `SD.srcfile` (i.e., the raw .csv data) to `dir_raw(YourDatasets, ...)` by default.
-3. Add a new line to `SmallDatasetMaker.dataset_table(YourDatasets)` (update `data/doc/datasets/csv` of `YourDatasets`).
+3. Add a new line to `SmallDatasetMaker.dataset_table(YourDatasets)` (update `data/doc/datasets.csv` of `YourDatasets`).
 
 See also `SourceData`, `compress_save`.
 """
@@ -178,7 +180,7 @@ end
 # Example
 ```julia
 using YourDatasets, SmallDatasetMaker
-srcfile = "data/raw/Mypackage/mydataset.csv" # path to the .csv to be compressed.
+srcfile = "data/raw/Category_A/Dataset_B.csv" # path to the .csv to be compressed.
 compress_save(YourDatasets, srcfile)
 ```
 """

@@ -22,12 +22,6 @@ end
 
 If `timestamps` not specified, it will be `today()`.
 
-# Example
-
-```
-srcfile = "data/raw/Category_A/Dataset_B.csv"
-SD = SourceData(srcfile)
-```
 """
 function SourceData(srcfile, package_name, dataset_name, title, zipfile, rows, columns, description)
     SourceData(srcfile, package_name, dataset_name, title, zipfile, rows, columns, description, today())
@@ -72,9 +66,10 @@ end
 If `package_name, dataset_name` not specified, `(package_name, dataset_name) = get_package_dataset_name(srcfile)` is applied.
 
 # Example
-```julia
+
+```
 using SmallDatasetMaker
-srcfile = "data/raw/Mypackage/mydataset.csv" # path to the .csv to be compressed.
+srcfile = "data/raw/Category_A/Dataset_B.csv" # path to the .csv to be compressed.
 SD = SourceData(srcfile)
 ```
 """
