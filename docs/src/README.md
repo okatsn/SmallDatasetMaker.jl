@@ -23,6 +23,13 @@ SourceData
 compress_save!
 ```
 
+See also 
+
+```@docs
+SmallDatasetMaker.get_package_dataset_name
+SmallDatasetMaker.dir_raw
+```
+
 #### 3. Add methods `dataset` and `datasets`
 New methods for `dataset` and `datasets`; see the example below.
 
