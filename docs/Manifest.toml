@@ -2,7 +2,7 @@
 
 julia_version = "1.8.5"
 manifest_format = "2.0"
-project_hash = "8e0b8d4cc9713937ab6d803c68fdcd6d49c514f6"
+project_hash = "f4c5169a10757afd00b37773a3162ebb6cfb4f7b"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -231,6 +231,12 @@ version = "1.2.2"
 [[deps.SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 version = "0.7.0"
+
+[[deps.SWCExampleDatasets]]
+deps = ["SmallDatasetMaker"]
+git-tree-sha1 = "346f42747a98ad87374aff13736c656b3d4f9868"
+uuid = "d741b33f-378c-4fda-a3ef-81fb108a0236"
+version = "0.1.4"
 
 [[deps.SentinelArrays]]
 deps = ["Dates", "Random"]

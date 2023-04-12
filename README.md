@@ -13,13 +13,4 @@ This is a julia package created using `okatsn`'s preference, and this package is
 
 `SmallDatasetMaker` provides tools for making your own dataset as a julia package.
 
-### Procedure
-In for example, `YourDatasets`,
-
-
-For example:
-
-
-
-### Testing your dataset just created
-# TODO: add links to pages here
+See [SmallDatasetMaker.jl](https://okatsn.github.io/SmallDatasetMaker.jl/dev/).

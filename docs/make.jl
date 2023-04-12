@@ -1,7 +1,7 @@
-using SmallDatasetMaker
+using SmallDatasetMaker, SWCExampleDatasets
 using Documenter
 
-DocMeta.setdocmeta!(SmallDatasetMaker, :DocTestSetup, :(using SmallDatasetMaker); recursive=true)
+DocMeta.setdocmeta!(SmallDatasetMaker, :DocTestSetup, :(using SmallDatasetMaker, SWCExampleDatasets); recursive=true)
 
 makedocs(;
     modules=[SmallDatasetMaker],
@@ -15,8 +15,9 @@ makedocs(;
         assets=String[],
     ),
     pages=[
-        "Home" => "index.md",
+        "Index" => "index.md",
         "Introduction" => "README.md",
+        "Example" => "example.md",
         "Assistant tools" => "assisttools.md"
     ],
 )

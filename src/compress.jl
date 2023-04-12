@@ -119,6 +119,18 @@ By default, `move_source = true` that the source file will be moved to `dir_raw(
 
 `compress_save!` returns $returned, where
 `relpath!` is applied that paths `SD` as well as `dataset_table(mod)` are modified to be relative.
+
+# Example
+```julia
+using YourDatasets
+compress_save!(YourDatasets, SD)
+```
+This do the followings:
+1. Create zipped files under `data/` of package `YourDatasets` in `dev`elopment.
+2. Move the source file `SD.srcfile` (i.e., the raw .csv data) to `dir_raw(YourDatasets, ...)` by default.
+3. Add a new line to `SmallDatasetMaker.dataset_table(YourDatasets)` (update `data/doc/datasets/csv` of `YourDatasets`).
+
+See also `SourceData`, `compress_save`.
 """
 function compress_save!(mod::Module, SD::SourceData; move_source = true)
 
@@ -159,7 +171,7 @@ function compress_save!(mod::Module, SD::SourceData; move_source = true)
 end
 
 """
-`compress_save(mod::Module, srcpath; args...)` is equivalent to `compress_save!(mod, SourceData(srcpath))` but returns `SD::SourceData`.
+`compress_save(mod::Module, srcpath; args...)` is equivalent to `compress_save!(mod, SourceData(srcpath))` but returns `SD = SourceData(srcpath)`.
 
 `compress_save` takes the same keyword arguments as `compress_save!`, which returns $returned.
 """

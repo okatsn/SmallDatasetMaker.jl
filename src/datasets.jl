@@ -34,7 +34,7 @@ dataset_table(mod::Module) = joinpath(DATASET_ABS_DIR(mod)[],"data", "doc", "dat
 readcsvfile(tablepath) = DataFrame(CSV.File(tablepath))
 
 """
-`datasets(mod::Module)` reads the table from `dataset_table(mod)`, and set `__datasets::DataFrame` to be the global variable in the scope of `mod` (i.e., `mod.__datasets` show the list of packages and datasets).
+`datasets(mod::Module)` reads the table from `dataset_table(mod)`, and set `__datasets::DataFrame` to be the `const` variable in the scope of `mod` (i.e., `mod.__datasets` show the list of packages and datasets).
 
 If there is no `using SmallDatasetMaker` in the `module \$mod ... end`, it will fail since it is executed at the scope of `mod`.
 """
