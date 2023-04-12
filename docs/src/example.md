@@ -11,7 +11,7 @@ which is equivalent to:
 
 ```@example b123
 using SWCExampleDatasets, SmallDatasetMaker
-SWCExampleDatasets.datasets(SWCExampleDatasets)
+SmallDatasetMaker.datasets(SWCExampleDatasets)
 ```
 
 Or, alternatively, 

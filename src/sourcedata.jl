@@ -70,6 +70,13 @@ end
 
 """
 If `package_name, dataset_name` not specified, `(package_name, dataset_name) = get_package_dataset_name(srcfile)` is applied.
+
+# Example
+```julia
+using SmallDatasetMaker
+srcfile = "data/raw/Mypackage/mydataset.csv" # path to the .csv to be compressed.
+SD = SourceData(srcfile)
+```
 """
 function SourceData(srcfile)
     (package_name, dataset_name) = get_package_dataset_name(srcfile)

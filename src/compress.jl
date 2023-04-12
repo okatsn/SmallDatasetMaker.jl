@@ -122,7 +122,7 @@ By default, `move_source = true` that the source file will be moved to `dir_raw(
 
 # Example
 ```julia
-using YourDatasets
+using YourDatasets, SmallDatasetMaker
 compress_save!(YourDatasets, SD)
 ```
 This do the followings:
@@ -174,6 +174,13 @@ end
 `compress_save(mod::Module, srcpath; args...)` is equivalent to `compress_save!(mod, SourceData(srcpath))` but returns `SD = SourceData(srcpath)`.
 
 `compress_save` takes the same keyword arguments as `compress_save!`, which returns $returned.
+
+# Example
+```julia
+using YourDatasets, SmallDatasetMaker
+srcfile = "data/raw/Mypackage/mydataset.csv" # path to the .csv to be compressed.
+compress_save(YourDatasets, srcfile)
+```
 """
 function compress_save(mod::Module, srcpath; args...)
     SD = SourceData(srcpath)
