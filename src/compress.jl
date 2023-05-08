@@ -143,9 +143,9 @@ function compress_save!(mod::Module, SD::SourceData; move_source = true)
         write(io, compressed)
         @info "Zipped file saved at $target_path"
     end
-
     if move_source
-        target_raw = dir_raw(mod, basename(SD.srcfile))
+        (pkgname, _) = get_package_dataset_name(SD.srcfile)
+        target_raw = dir_raw(mod, pkgname, basename(SD.srcfile))
         if isfile(target_raw)
             ex = open(target_raw, "r") do io
                 read(io)
@@ -163,13 +163,21 @@ function compress_save!(mod::Module, SD::SourceData; move_source = true)
         else
             OkFiles.mkdirway(target_raw) # mkpath of dir_raw() in case it doesn't exists
             mv(SD.srcfile, target_raw)
+            @info "Raw data moved to $(target_raw)."
         end
         SD.srcfile = target_raw
     end
+
     relpath!(SD, mod)
     reftablepath = dataset_table(mod)
-    CSV.write(reftablepath, SmallDatasetMaker.DataFrame(SD); append=true) # write .srcfile, .zipfile as relative paths (thus can be abspath! correctly when using `dataset` or `unzip_file` using `package_name` & `dataset_name`)
+    dirdoc = dirname(reftablepath)
+    if !isdir(dirdoc)
+        mkpath(dirdoc) # if dirdoc does not exist, the following CSV.write will fail
+    end
+    CSV.write(reftablepath, SmallDatasetMaker.DataFrame(SD); append=isfile(reftablepath)) # write .srcfile, .zipfile as relative paths (thus can be abspath! correctly when using `dataset` or `unzip_file` using `package_name` & `dataset_name`)
+    # since writeheader=!append, isfile is required
     @info "$(basename(reftablepath)) updated successfully."
+
 end
 
 """
