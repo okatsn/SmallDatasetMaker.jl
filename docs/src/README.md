@@ -87,13 +87,29 @@ You may also optionally have the following tests in `YourDatasets`:
 
 **Test if the table to the list of `YourDatasets` is fine**:
 ```julia
-@testset "datasets.jl" begin
+@testset "Test if datasets() works" begin
     using DataFrames
     df = YourDatasets.datasets()
     @test isa(df, DataFrame)
     @test isa(YourDatasets.__datasets, DataFrame)
 end
 
+```
+
+
+```julia
+@testset "Test if ALL datasets can be successfully loaded." begin
+    using DataFrames
+    for lastrow in eachrow(YourDatasets.__datasets)
+        pkgnm = lastrow.PackageName
+        datnm = lastrow.Dataset
+        df = YourDatasets.dataset(pkgnm, datnm)
+        @info "$pkgnm/$datnm goes through `PrepareTableDefault` without error."
+        @test lastrow.Columns == ncol(df)
+        @test lastrow.Rows == nrow(df)
+    end
+    @test true
+end
 ```
 
 ## See also
