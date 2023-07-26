@@ -14,12 +14,18 @@ Create a julia package, for example, `YourDatasets.jl`. For convenience, `YourDa
 
 See [PkgTemplates](https://github.com/JuliaCI/PkgTemplates.jl) and [Pkg.jl/Creating Packages](https://pkgdocs.julialang.org/v1/creating-packages/) about how to create a julia package.
 
+`SmallDatasetMaker` should be added to the `Project.toml` `of YourDatasets`:
+- `(YourDatasets) pkg> add SmallDatasetMaker`
+
+
 ### 2. Convert the raw data to a dataset
+
+!!! note 
+    Activate the environment `YourDatasets` and `using SmallDatasetMaker` first!
 
 1. Make your dataset to be compressed a csv file.
 2. Define the `SourceData` object with the `srcpath` to be the path to this csv file.
 3. Call `compress_save!` or `compress_save`.
-4. `using SmallDatasetMaker` in the module scope of `YourDatasets`.
 
 ```@docs
 SourceData
@@ -28,9 +34,13 @@ compress_save
 ```
 
 ### 3. Add methods `dataset` and `datasets`
-New methods for `dataset` and `datasets`; see the example below.
+- `using SmallDatasetMaker` in the module scope of `YourDatasets`
+- (Optional) New methods for `dataset` and `datasets`.
+
+#### Example
 
 In `src/YourDatasets.jl`:
+
 ```julia
 
 module YourDatasets
