@@ -134,7 +134,7 @@ This do the followings:
 
 See also `SourceData`, `compress_save`.
 """
-function compress_save!(mod::Module, SD::SourceData; move_source = true)
+function compress_save!(mod::Module, SD::SourceData; move_source=true)
 
     compressed = return_compressed(SD.srcfile)
     target_path = SD.zipfile
@@ -142,8 +142,8 @@ function compress_save!(mod::Module, SD::SourceData; move_source = true)
     open(target_path, "w") do io
         write(io, compressed)
         @info "Zipped file saved at $target_path"
-    end
-    if move_source
+    end # save compressed data in the absolute path of your in-dev package
+    if move_source # srcfile (raw data) is preserved in folder to be .gitignored
         (pkgname, _) = get_package_dataset_name(SD.srcfile)
         target_raw = dir_raw(mod, pkgname, basename(SD.srcfile))
         if isfile(target_raw)
