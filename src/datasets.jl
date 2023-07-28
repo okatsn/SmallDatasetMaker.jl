@@ -4,7 +4,7 @@
 DATASET_ABS_DIR(mod::Module) = Ref{String}(dirname(dirname(pathof(mod))))
 
 """
-`abspath(mod::Module, args...) = joinpath(DATASET_ABS_DIR(mod)[], args...)`.
+`abspath(mod::Module, args...) = joinpath(DATASET_ABS_DIR(mod)[], args...)` return absolute path of the module `mod`.
 
 # WARNING: DO NOT EXPORT THIS FUNCTION
 this function has the same name of `abspath` in `FilePathsBase` and `Base.Filesystem`.
@@ -28,7 +28,7 @@ The reason for `dataset_table` to be a function rather than a constant is that I
 
 
 """
-dataset_table(mod::Module) = joinpath(DATASET_ABS_DIR(mod)[],"data", "doc", "datasets.csv")
+dataset_table(mod::Module) = joinpath(DATASET_ABS_DIR(mod)[], "data", "doc", "datasets.csv")
 
 
 readcsvfile(tablepath) = DataFrame(CSV.File(tablepath))
@@ -59,7 +59,7 @@ Given `package_name, dataset_name`, `target_row(mod, package_name, dataset_name)
 """
 function target_row(mod::Module, package_name, dataset_name; kwargs...)
     indextable = SmallDatasetMaker.datasets(mod; kwargs...)
-    row = filter([:PackageName, :Dataset] => (p, d) -> p == package_name && d == dataset_name , indextable) |> eachrow |> last
+    row = filter([:PackageName, :Dataset] => (p, d) -> p == package_name && d == dataset_name, indextable) |> eachrow |> last
 end
 
 """
@@ -72,6 +72,6 @@ function create_empty_table(args...)
         error("$(fpath) already exists.")
     else
         fpath |> dirname |> mkpath # make directories along the way
-        DataFrame( [col => String[] for col in ordered_columns]) |> df -> CSV.write(fpath, df)
+        DataFrame([col => String[] for col in ordered_columns]) |> df -> CSV.write(fpath, df)
     end
 end
