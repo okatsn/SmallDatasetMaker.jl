@@ -116,6 +116,30 @@ end
 end
 
 
+@testset "Test the `targeting_mod` option" begin
+    srcdir = SmallDatasetMaker.dir_data("RDatasets")
+    mkpath(srcdir)
+    srcfile = joinpath(srcdir, "iris.csv")
+    CSV.write(srcfile, iris)
+
+    SD = SmallDatasetMaker.compress_save(srcfile; move_source=true, targeting_mod = false) # save to SmallDatasetMaker/data/...
+    show(SD)
+    target_path = SmallDatasetMaker.abspath(SD.zipfile)
+    source_file_moved = SmallDatasetMaker.abspath(SD.srcfile)
+    @info "`srcfile`: $srcfile"
+    @info "`SD.srcfile`: $(SD.srcfile)"
+    @info "`target_path`: $target_path"
+    @info "`SD.zipfile`: $(SD.zipfile)"
+
+    @test !isfile(srcfile) # should be moved
+    @test !isfile(SD.srcfile) # should no longer here in test's scope
+    @test isfile(source_file_moved) # to here!
+    @test isfile(target_path)
+
+    rm(target_path) # pwd is test/, SD.zipfile is originally data/RDatasets/iris.gz, and be modified by `relpath!` in `compress_save!`, making it test/data/RDatasets/iris.gz (relative to SmallDatasetMaker). Thus, I have to manually remove test/data/RDatasets/iris.gz; for a usual case, it is expected to use SmallDatasetMaker in the project folder of XXXDatasets.
+    rm(SmallDatasetMaker.dataset_dir(); recursive = true)
+end
+
 # TODO: test relative paths:
 # - compress_save! makes paths in SD relative
 # - SourceData(mod, ::DataFrameRow) makes paths absolute

@@ -134,15 +134,21 @@ This do the followings:
 
 See also `SourceData`, `compress_save`.
 """
-function compress_save!(mod::Module, SD::SourceData; move_source=true)
+function compress_save!(mod::Module, SD::SourceData; move_source=true, targeting_mod = false)
 
     compressed = return_compressed(SD.srcfile)
-    target_path = SD.zipfile
+    if targeting_mod # output data relative to the `mod`'s path.
+        target_path = SmallDatasetMaker.abspath(mod, SD.zipfile)
+    else
+        target_path = SD.zipfile
+    end
+
     mkpath(dirname(target_path))
     open(target_path, "w") do io
         write(io, compressed)
         @info "Zipped file saved at $target_path"
     end # save compressed data in the absolute path of your in-dev package
+
     if move_source # srcfile (raw data) is preserved in folder to be .gitignored
         (pkgname, _) = get_package_dataset_name(SD.srcfile)
         target_raw = dir_raw(mod, pkgname, basename(SD.srcfile))
