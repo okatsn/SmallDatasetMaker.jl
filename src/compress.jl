@@ -139,6 +139,7 @@ function compress_save!(mod::Module, SD::SourceData; move_source=true, targeting
     compressed = return_compressed(SD.srcfile)
     if targeting_mod # output data relative to the `mod`'s path.
         target_path = SmallDatasetMaker.abspath(mod, SD.zipfile)
+        SD.zipfile = target_path
     else
         target_path = SD.zipfile
     end

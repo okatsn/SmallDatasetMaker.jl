@@ -116,16 +116,17 @@ end
 end
 
 
-@testset "Test the `targeting_mod` option" begin
+@testset "Test the `targeting_mod` option (1)" begin
     srcdir = SmallDatasetMaker.dir_data("RDatasets")
     mkpath(srcdir)
     srcfile = joinpath(srcdir, "iris.csv")
     CSV.write(srcfile, iris)
 
-    SD = SmallDatasetMaker.compress_save(srcfile; move_source=true, targeting_mod = false) # save to SmallDatasetMaker/data/...
+    SD = compress_save(SmallDatasetMaker, srcfile; move_source=true, targeting_mod = true) # save to SmallDatasetMaker/data/...
     show(SD)
-    target_path = SmallDatasetMaker.abspath(SD.zipfile)
+    target_path = SmallDatasetMaker.abspath(SmallDatasetMaker, SD.zipfile)
     source_file_moved = SmallDatasetMaker.abspath(SD.srcfile)
+    @info "Where is SmallDatasetMaker? $(SmallDatasetMaker.abspath(SmallDatasetMaker))"
     @info "`srcfile`: $srcfile"
     @info "`SD.srcfile`: $(SD.srcfile)"
     @info "`target_path`: $target_path"
@@ -136,11 +137,48 @@ end
     @test isfile(source_file_moved) # to here!
     @test isfile(target_path)
 
+
     rm(target_path) # pwd is test/, SD.zipfile is originally data/RDatasets/iris.gz, and be modified by `relpath!` in `compress_save!`, making it test/data/RDatasets/iris.gz (relative to SmallDatasetMaker). Thus, I have to manually remove test/data/RDatasets/iris.gz; for a usual case, it is expected to use SmallDatasetMaker in the project folder of XXXDatasets.
     rm(SmallDatasetMaker.dataset_dir(); recursive = true)
+
 end
 
-# TODO: test relative paths:
-# - compress_save! makes paths in SD relative
-# - SourceData(mod, ::DataFrameRow) makes paths absolute
-# - SourceData(mod, ::NotDataFrameRow) makes paths relative to mod
+@testset "Test the `targeting_mod` option (2)" begin
+    srcdir = SmallDatasetMaker.dir_data("temp")
+    targetdir = SmallDatasetMaker.dir_data()
+    rawdir = SmallDatasetMaker.dir_data("raw")
+
+    mkpath.([srcdir, targetdir, rawdir])
+    srcfile = joinpath(srcdir, "iris.csv")
+    CSV.write(srcfile, iris)
+
+    package_name = "MJ"
+    dataset_name = "IRIS"
+    SD = SmallDatasetMaker.SourceData(srcfile, package_name, dataset_name)
+    show(SD) # also test `show`
+
+    @test isequal.(names(SmallDatasetMaker.DataFrame(SD)), string.(SmallDatasetMaker.ordered_columns)) |> all # DataFrame created from SourceData should in the correct order as ordered_columns # KEYNOTE: This is not necessary but just test if it is consistent with docstring since appending DataFrame is insensitive to column order.
+
+    SmallDatasetMaker.compress_save!(SmallDatasetMaker, SD; targeting_mod = true) ##KEYNOTE: test the main method
+    target_path = SmallDatasetMaker.abspath(SD.zipfile)
+    @test isfile(target_path) || "Target file ($(target_path)) unexported"
+
+    df_decomp2 = SmallDatasetMaker.dataset(target_path)
+    df_decomp1 = SmallDatasetMaker.unzip_file(target_path)
+
+    @test isequal(df_decomp1, df_decomp2)
+
+    @test isfile(SmallDatasetMaker.dir_data(SmallDatasetMaker, package_name, dataset_name*".gz")) || "Target file not exists or named correctly"
+
+    @test !isfile(srcfile) || "srcfile should be moved to dir_raw"
+    source_file_moved = SmallDatasetMaker.abspath(SD.srcfile)
+    @test isfile(source_file_moved) || "SD.srcfile should be updated and the file should exists"
+
+    rm("IRIS.csv")
+    rm("data"; recursive = true)
+end
+
+# # TODO: test relative paths:
+# # - compress_save! makes paths in SD relative
+# # - SourceData(mod, ::DataFrameRow) makes paths absolute
+# # - SourceData(mod, ::NotDataFrameRow) makes paths relative to mod
