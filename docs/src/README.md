@@ -76,8 +76,6 @@ SmallDatasetMaker.datasets(YourDatasets)
 df = SmallDatasetMaker.dataset(YourDatasets, "LHVRSHIVA", "SHIVA")
 ```
 
-See also [Example](@ref).
-
 ## Best practice/Hints
 
 #### Keep the default branch clean without raw data
