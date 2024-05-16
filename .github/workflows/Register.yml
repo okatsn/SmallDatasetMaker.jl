@@ -1,8 +1,5 @@
 name: Register Package
 on:
-  push:
-    paths:
-      - "Project.toml"
   workflow_dispatch:
     inputs:
       version:
@@ -12,7 +9,7 @@ jobs:
   register:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+        contents: write
     steps:
       - uses: julia-actions/RegisterAction@latest
         with:
