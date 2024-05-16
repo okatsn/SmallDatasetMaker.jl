@@ -114,9 +114,11 @@ const column_field_dictionary = OrderedDict(zip(values(field_column_dictionary),
 returned = "`SD::SourceData` of relative paths to `DATASET_ABS_DIR(mod)[]`"
 
 """
-`compress_save!(mod::Module, SD::SourceData; move_source = true, targeting_mod = true)` compress the `SD.srcfile`, save the zipped one to `SD.zipfile`, and update the `dataset_table(mod)`.
-By default, `move_source = true` that the source file will be moved to `dir_raw()`.
-Set `targeting_mod = true` to make sure the compressed data is saved relative to the repo of `mod`.
+`compress_save!(mod::Module, SD::SourceData; move_source = true, targeting_mod = false)` compress the `SD.srcfile`, save the zipped one to `SD.zipfile`, and update the `dataset_table(mod)`.
+
+Options:
+- By default, `move_source = true` that the source file will be moved to `dir_raw()`.
+- Set `targeting_mod = true` to make sure the compressed data is saved relative to the repo of `mod`. Default is `false`, which means you can compress and save the data to whatever directory you like.
 
 `compress_save!` returns $returned, where
 `relpath!` is applied that paths `SD` as well as `dataset_table(mod)` are modified to be relative.
@@ -125,7 +127,7 @@ Set `targeting_mod = true` to make sure the compressed data is saved relative to
 
 ```julia
 using YourDatasets, SmallDatasetMaker
-compress_save!(YourDatasets, SD)
+compress_save!(YourDatasets, SD; targeting_mod = true)
 ```
 
 This do the followings:
