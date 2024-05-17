@@ -5,3 +5,10 @@ Use `tryparse_summary`.
 tryparse_summary
 difftables
 ```
+
+Garbage collection
+
+```@docs
+cleantable
+gc
+```
