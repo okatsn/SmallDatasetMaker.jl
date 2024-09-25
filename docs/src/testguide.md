@@ -5,6 +5,7 @@
 ```@example
 using SWCExampleDatasets, Test
 using DataFrames, SmallDatasetMaker
+
 @testset "Test All Datasets" begin
     
     dataset0 = SWCExampleDatasets.__datasets
@@ -20,4 +21,5 @@ using DataFrames, SmallDatasetMaker
     @test true
 end
 
+nothing
 ```
