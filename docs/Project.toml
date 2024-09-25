@@ -1,4 +1,5 @@
 [deps]
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 SWCExampleDatasets = "d741b33f-378c-4fda-a3ef-81fb108a0236"
 SmallDatasetMaker = "7016d903-ac20-4882-9d97-75c232100024"
