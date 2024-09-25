@@ -18,7 +18,8 @@ makedocs(;
         "Index" => "index.md",
         "Introduction" => "README.md",
         "Example" => "example.md",
-        "Assistant tools" => "assisttools.md"
+        "Assistant tools" => "assisttools.md",
+        "Test your datasets" => "testguide.md"
     ],
 )
 

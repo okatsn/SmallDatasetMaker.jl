@@ -34,5 +34,7 @@ export tryparse_summary
 include("difftable.jl")
 export difftables
 
+include("gc.jl")
+export cleantable
 
 end
