@@ -6,13 +6,13 @@ module SmallDatasetMaker
 
 using OkFiles
 
-using CSV,DataFrames
+using CSV, DataFrames
 include("datasets.jl")
-export create_empty_table, datasets
+export create_empty_table
 
 include("datadir.jl")
 
-using CodecZlib,Dates
+using CodecZlib, Dates
 import PrettyTables
 using OrderedCollections
 include("sourcedata.jl")
@@ -21,7 +21,7 @@ include("compress.jl")
 export compress_save, compress_save!
 
 include("decompress.jl")
-export dataset, unzip_file
+export unzip_file
 
 
 # TODO: create a dataset.csv generator and remove the entire data/doc/datasets.csv
