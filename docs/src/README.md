@@ -46,15 +46,15 @@ In `src/YourDatasets.jl`:
 module YourDatasets
 
     using SmallDatasetMaker
-   # (required) See also `SmallDatasetMaker.datasets`.
+    # (required) See also `SmallDatasetMaker.datasets`.
 
-    function YourDatasets.dataset(package_name, dataset_name)
+    function dataset(package_name, dataset_name)
         SmallDatasetMaker.dataset(YourDatasets,package_name, dataset_name)
     end 
     # (optional but recommended) 
     # To allow direct use of `dataset` without `SmallDatasetMaker`.
 
-    YourDatasets.datasets() = SmallDatasetMaker.datasets(YourDatasets) 
+    datasets() = SmallDatasetMaker.datasets(YourDatasets) 
     # (optional but recommended) To allow the direct use of `YourDatasets.datasets()`
 end
 
