@@ -48,7 +48,7 @@ function datasets(mod::Module)
         @eval(mod, $expr)
     end
 
-    return mod.__datasets
+    return Base.invokelatest(getfield, mod, :__datasets)
 end
 # Set `; update_table = true` to force update `SmallDatasetMaker.__datasets` with the `dataset_table(mod)`; this keyword argument is intended to make some tests can work since in test `dataset_table(mod)` is mutating. # todo: find a better way to deal with it.
 

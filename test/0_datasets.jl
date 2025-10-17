@@ -27,7 +27,7 @@ SmallDatasetMaker.DATASET_ABS_DIR() = DATASET_ABS_DIR(SmallDatasetMaker)
 
 SmallDatasetMaker.unzip_file(package_name::AbstractString, dataset_name::AbstractString; kwargs...) = unzip_file(SmallDatasetMaker, package_name::AbstractString, dataset_name::AbstractString; kwargs...)
 
-SmallDatasetMaker.dataset(package_name::AbstractString, dataset_name::AbstractString; kwargs...) = dataset(SmallDatasetMaker,package_name::AbstractString, dataset_name::AbstractString; kwargs...)
+SmallDatasetMaker.dataset(package_name::AbstractString, dataset_name::AbstractString; kwargs...) = dataset(SmallDatasetMaker, package_name::AbstractString, dataset_name::AbstractString; kwargs...)
 
 
 function SmallDatasetMaker.compress_save!(SD::SourceData; kwargs...)
@@ -77,10 +77,10 @@ SmallDatasetMaker.datasets() = SmallDatasetMaker.datasets(SmallDatasetMaker)
     using DataFrames
     # There should be no datasets.csv, and thus raise an expected error.
     @test try
-        SmallDatasetMaker.datasets(SmallDatasetMaker);
-        false;
+        SmallDatasetMaker.datasets(SmallDatasetMaker)
+        false
     catch e
-        true;
+        true
     end
 
     # Create an empty datasets.csv.
@@ -91,6 +91,6 @@ SmallDatasetMaker.datasets() = SmallDatasetMaker.datasets(SmallDatasetMaker)
 
     df = SmallDatasetMaker.datasets()
     @test isa(df, DataFrame)
-    @test isa(SmallDatasetMaker.__datasets, DataFrame)
+    @test isa(Base.invokelatest(getfield, SmallDatasetMaker, :__datasets), DataFrame)
     rm(SmallDatasetMaker.dataset_table())
 end
