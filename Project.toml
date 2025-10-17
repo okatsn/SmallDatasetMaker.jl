@@ -1,7 +1,7 @@
 name = "SmallDatasetMaker"
 uuid = "7016d903-ac20-4882-9d97-75c232100024"
 authors = ["okatsn <okatsn@gmail.com> and contributors"]
-version = "0.3.0"
+version = "0.3.1"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
@@ -16,11 +16,11 @@ PrettyTables = "08abe8d2-0d0c-5749-adfa-8a2ac140af0d"
 [compat]
 CSV = "0.10"
 CodecZlib = "0.7"
-DataFrames = "1.5, 1.7"
-GZip = "0.5.1, 0.6.2"
-OkFiles = "0.4, 0.5"
-OrderedCollections = "1.4 , 1.6"
-PrettyTables = "2.2, 2.4"
+DataFrames = "1.5"
+GZip = "0.5"
+OkFiles = "0.4"
+OrderedCollections = "1.4"
+PrettyTables = "2.2, 3.1"
 julia = "1.10"
 
 [extras]
